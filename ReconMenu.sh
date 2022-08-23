@@ -35,7 +35,7 @@ help() {
     -sP   | --ScanParametros(Opcional) : Procura por parametros com possiveis padrões de Vuln. (Gf & Gf-Pattern)
     -sT   | --Scantemplates (Opcional) : Testa URL's atravês de templates. (nuclei)
     -sV   | --ScanVisual    (Opcional) : Faz um scan mais 'visual' dás urls. (aquatone)
-    -sC   | --ScanGit       (Opcional)
+    -sC   | --ScanGit       (Opcional) : Procura por git exposeds. (goop)
     "
 }
 
@@ -60,13 +60,8 @@ amass(){
     echo -e ">> \e[36mAmass\e[0m is in progress"
     mkdir -p $ResultadoPath/$domain/Amass
     wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/deepmagic.com-prefixes-top50000.txt -P $ResultadoPath/$domain/Amass > /dev/null 2>&1
-    
-    if [ -z "$ac" ]
-    then
-      amass enum -active -o $ResultadoPath/$domain/$(date +%F)/domains_tmp.txt -d $domain -brute -w $ResultadoPath/$domain/deepmagic.com-prefixes-top50000.txt -dir $ResultadoPath/$domain/Amass > /dev/null 2>&1
-    else
-      amass enum -active -o $ResultadoPath/$domain/$(date +%F)/domains_tmp.txt -d $domain -brute -w $ResultadoPath/$domain/deepmagic.com-prefixes-top50000.txt -config $ac -dir $ResultadoPath/$domain/Amass > /dev/null 2>&1
-    fi
+          
+    amass enum -active -o $ResultadoPath/$domain/$(date +%F)/domains_tmp.txt -d $domain -brute -w $ResultadoPath/$domain/deepmagic.com-prefixes-top50000.txt -dir $ResultadoPath/$domain/Amass > /dev/null 2>&1
     cat $ResultadoPath/$domain/$(date +%F)/domains_tmp.txt | sort -u > $ResultadoPath/$domain/$(date +%F)/$1/amass.txt
 }
 
@@ -140,7 +135,8 @@ aquatone(){
 
 goop(){
     echo -e ">> \e[36mGoop\e[0m is in progress"
-    cat $ResultadoPath/$domain/$(date +%F)/$1/URLsLimpas.txt | xargs -I@ sh -c 'goop -f @' > GitTest.txt
+    ##cat $ResultadoPath/$domain/$(date +%F)/$1/URLsLimpas.txt | xargs -I@ sh -c 'goop -f @' > GitTest.txt
+    goop -l $ResultadoPath/$domain/$(date +%F)/$1/URLsLimpas.txt > $ResultadoPath/$domain/$(date +%F)/$1/goop.txt
 }
 
 ##httpx
