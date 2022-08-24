@@ -12,6 +12,7 @@ die() {
 }
 
 help() {
+    banner
     echo -e "Use : .recon.sh -d domain.tld -r -s
     -d    | --domain        (requer)   : Dominio em formato domain.tld.
     --Recon--
@@ -157,8 +158,6 @@ httpxT(){
 ## Main ##
 
 main(){
-    banner()
-
     if [-v full] ## Vai scanear se a opção for true.
     then
         echo -e "Recon FULL em andamento, pega um café... ou uma cerveja :)"
@@ -228,6 +227,7 @@ main(){
         case $1 in
             -h|--help)
                 help
+                exit
                 ;;
             -d|--domain)
                 if ["$2"];then
@@ -240,40 +240,55 @@ main(){
             ##recon tools
             -FullRecon)
                 full = true
+                shift
                 ;;
             -sD)
                 subs = true
+                shift
                 ;;
             -u)
                 urls = true
+                shift
                 ;;
             -e)
                 endpoint = true
+                shift
                 ;;
             -p)
                 parametros = true
+                shift
                 ;;
             -s)
                 secrets = true
+                shift
                 ;;
             ## Scans tolls
             -sP)
                 ScanParametros = true
+                shift
                 ;;
             -sT)
                 ScanTemplates = true
+                shift
                 ;;
             -sV)
                 ScanVisual = true
+                shift
                 ;;
             -sG)
                 ScanGit = true
+                shift
                 ;;
             ## Verificar txts
             -v)
                 verificar = true
+                shift
                 ;;
+            *)
+                break
         esac
+        
+        shift
 done
             
                 
