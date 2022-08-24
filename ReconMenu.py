@@ -1,3 +1,4 @@
+import subprocess
 import os
 import argparse
 
@@ -43,7 +44,7 @@ banner = '''
 
 def start():
     print('Recon iniciando... Boa sorte Hunter!!')
-    os.system(f'mkdir -p {ResultadoPath}/{domain}/')
+    subprocess.Popen(f'mkdir -p {ResultadoPath}/{domain}/', shell=True)
 
 
 
@@ -51,53 +52,48 @@ def start():
 
 def amassT():
     print('Iniciando Amass para enumeração de dominios...')
-    os.system(f'mkdir -p {ResultadoPath}/{domain}/Amass')
-    os.system(f'wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/deepmagic.com-prefixes-top50000.txt -P {ResultadoPath}/{domain}/Amass > /dev/null 2>&1')
-    os.system(f'amass enum -active -o {ResultadoPath}/{domain}/domains_tmp.txt -d {domain} -brute -w {ResultadoPath}/{domain}/deepmagic.com-prefixes-top50000.txt -dir {ResultadoPath}/{domain}/Amass > /dev/null 2>&1')
-    os.system(f'cat {ResultadoPath}/{domain}/domains_tmp.txt | sort -u > {ResultadoPath}/{domain}/amass.txt')
+    subprocess.Popen(f'mkdir -p {ResultadoPath}/{domain}/Amass;wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/deepmagic.com-prefixes-top50000.txt -P {ResultadoPath}/{domain}/Amass > /dev/null 2>&1;amass enum -active -o {ResultadoPath}/{domain}/domains_tmp.txt -d {domain} -brute -w {ResultadoPath}/{domain}/deepmagic.com-prefixes-top50000.txt -dir {ResultadoPath}/{domain}/Amass > /dev/null 2>&1;cat {ResultadoPath}/{domain}/domains_tmp.txt | sort -u | tee {ResultadoPath}/{domain}/amass.txt', shell=True)
 
 def gauT():
-    os.system(f'gau >> {ResultadoPath}/{domain}/gau.txt')
-
+    subprocess.Popen(f'cat {ResultadoPath}/{domain}/amass.txt | gau --blacklist png,jpg,gif --threads 5 | tee {ResultadoPath}/{domain}/gau.txt', shell=True)
 
 def linkfinderT():
-    os.system(f'python3 {FerramentasPath}linkfinder.py -i -d -o cli > {ResultadoPath}/{domain}/linkfinder.txt')
+   subprocess.Popen(f'python3 {FerramentasPath}linkfinder.py -i -d -o cli > {ResultadoPath}/{domain}/linkfinder.txt', shell=True)
 
 def paramspiderT():
-    os.system(f'python3 {FerramentasPath}/paramspider.py --domain {domain} --exclude woff,css,js,png,svg,jpg -o {ResultadoPath}/{domain}/paramspider.txt > /dev/null 2>&1')
+    subprocess.Popen(f'python3 {FerramentasPath}/paramspider.py --domain {domain} --exclude woff,css,js,png,svg,jpg -o {ResultadoPath}/{domain}/paramspider.txt > /dev/null 2>&1', shell=True)
     arquivo = os.path.exists(f'{ResultadoPath}/{domain}/paramspider.txt')
     if arquivo is True:
-        os.system(f'mv {FerramentasPath}/ParamSpider/output/paramspider.txt {ResultadoPath}/{domain}/')
+        subprocess.Popen(f'mv {FerramentasPath}/ParamSpider/output/paramspider.txt {ResultadoPath}/{domain}/', shell=True)
 
 def subdomainizerT():
-    os.system(f'python3 {FerramentasPath}/SubDomainizer/SubDomainizer.py -u {domain} -o {ResultadoPath}/{domain}/SubDomainizer.txt > /dev/null 2>&1')
+    subprocess.Popen(f'python3 {FerramentasPath}/SubDomainizer/SubDomainizer.py -u {domain} -o {ResultadoPath}/{domain}/SubDomainizer.txt > /dev/null 2>&1', shell=True)
 
 
 ## Scan Tools ##
 
 def GfT():
-    os.system(f'mkdir -p $ResultadoPath/$domain/GF')
+    subprocess.Popen(f'mkdir -p $ResultadoPath/$domain/GF', shell=True)
 
-    os.system(f'gf xss {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/xss.txt')
-    os.system(f'gf potential {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/potential.txt')
-    os.system(f'gf debug_logic {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/debug_logic.txt')
-    os.system(f'gf idor {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/idor.txt')
-    os.system(f'gf lfi {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/lfi.txt')
-    os.system(f'gf rce {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/rce.txt')
-    os.system(f'gf redirect {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/redirect.txt')
-    os.system(f'gf sqli {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/sqli.txt')
-    os.system(f'gf ssrf {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/ssrf.txt')
-    os.system(f'gf ssti {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/ssti.txt')
+    subprocess.Popen(f'gf xss {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/xss.txt', shell=True)
+    subprocess.Popen(f'gf potential {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/potential.txt', shell=True)
+    subprocess.Popen(f'gf debug_logic {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/debug_logic.txt', shell=True)
+    subprocess.Popen(f'gf idor {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/idor.txt', shell=True)
+    subprocess.Popen(f'gf lfi {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/lfi.txt', shell=True)
+    subprocess.Popen(f'gf rce {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/rce.txt', shell=True)
+    subprocess.Popen(f'gf redirect {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/redirect.txt', shell=True)
+    subprocess.Popen(f'gf sqli {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/sqli.txt', shell=True)
+    subprocess.Popen(f'gf ssrf {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/ssrf.txt', shell=True)
+    subprocess.Popen(f'gf ssti {ResultadoPath}/{domain}/URLsLimpas.txt >> {ResultadoPath}/{domain}/GF/ssti.txt', shell=True)
 
 def nucleiT():
-    os.system(f'nuclei -l {ResultadoPath}/{domain}/URLsLimpas.txt -t {FerramentasPath}/nuclei-templates/ -o {ResultadoPath}/{domain}/nuclei.txt > /dev/null 2>&1')
+    subprocess.Popen(f'nuclei -severity high,critical -l {ResultadoPath}/{domain}/URLsLimpas.txt -t {FerramentasPath}/nuclei-templates/ -o {ResultadoPath}/{domain}/nuclei.txt > /dev/null 2>&1', shell=True)
 
 def aquatoneT():
-    os.system(f'mkdir {ResultadoPath}/{domain}/Aquatone')
-    os.system(f'cat {ResultadoPath}/{domain}/amass.txt | aquatone -chrome-path /snap/bin/chromium -ports xlarge > /dev/null 2>&1')
-
+    subprocess.Popen(f'mkdir {ResultadoPath}/{domain}/Aquatone;cat {ResultadoPath}/{domain}/amass.txt | aquatone -chrome-path /snap/bin/chromium -ports xlarge > /dev/null 2>&1', shell=True)
+  
 def goopT():
-    os.system(f'goop -l {ResultadoPath}/{domain}/URLsLimpas.txt > {ResultadoPath}/{domain}/goop.txt')
+    subprocess.Popen(f'goop -l {ResultadoPath}/{domain}/URLsLimpas.txt > {ResultadoPath}/{domain}/goop.txt', shell=True)
 
 
 
@@ -113,8 +109,7 @@ def goopT():
 # $ResultadoPath/$domain/$(date +%F)/$1/SubDomainizer.txt
 
 def httpxT():
-    os.system (f'cat {ResultadoPath}/{domain}/SubDomainizer.txt {ResultadoPath}/{domain}/paramspider.txt {ResultadoPath}/{domain}/linkfinder.txt {ResultadoPath}/{domain}/gau.txt {ResultadoPath}/{domain}/amass.txt > {ResultadoPath}/{domain}/geral.txt')
-    os.system (f'cat {ResultadoPath}/{domain}/geral.txt | httpx -silent | uniq -u > {ResultadoPath}/{domain}/URLsLimpas.txt')
+    subprocess.Popen(f'cat {ResultadoPath}/{domain}/SubDomainizer.txt {ResultadoPath}/{domain}/paramspider.txt {ResultadoPath}/{domain}/linkfinder.txt {ResultadoPath}/{domain}/gau.txt {ResultadoPath}/{domain}/amass.txt > {ResultadoPath}/{domain}/geral.txt;cat {ResultadoPath}/{domain}/geral.txt | httpx -silent | uniq -u > {ResultadoPath}/{domain}/URLsLimpas.txt', shell=True)
 
 
 
@@ -161,4 +156,5 @@ def main():
         goopT()
 
 if __name__ == '__main__':
+    start()
     main()
