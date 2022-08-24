@@ -56,7 +56,7 @@ start() {
 
 ## RECON TOOLS 
 
-amass(){
+amassT(){
     echo -e ">> \e[36mAmass\e[0m is in progress"
     mkdir -p $ResultadoPath/$domain/Amass
     wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/deepmagic.com-prefixes-top50000.txt -P $ResultadoPath/$domain/Amass > /dev/null 2>&1
@@ -67,21 +67,21 @@ amass(){
 
 ##  Gau
 
-gau(){
+gauT(){
 echo -e ">> \e[36mGAU\e[0m is in progress"
 gau $1 >> $ResultadoPath/$domain/$(date +%F)/$1/gau.txt
 }
 
 ## linkfinder
 
-linkfinder(){
+linkfinderT(){
 echo -e ">> \e[36mHakrwaler\e[0m is in progress"
 cd $FerramentasPath/LinkFinder/
 python3 linkfinder.py -i $1 -d -o cli > $ResultadoPath/$domain/$(date +%F)/$1/linkfinder.txt
 }
 
 ## Paramspider
-paramspider(){
+paramspiderT(){
 echo -e ">> \e[36mParamSpider\e[0m is in progress"
 cd $FerramentasPath/ParamSpider/
 python3 paramspider.py --domain $1 --exclude woff,css,js,png,svg,jpg -o paramspider.txt > /dev/null 2>&1
@@ -93,7 +93,7 @@ python3 paramspider.py --domain $1 --exclude woff,css,js,png,svg,jpg -o paramspi
 }
 
 ## Secrets e Dominios dentro do codigo fonte
-subdomainizer(){
+subdomainizerT(){
   echo -e ">> \e[36mSubDomainizer\e[0m is in progress"
   python3 $FerramentasPath/SubDomainizer/SubDomainizer.py -u $1 -o $ResultadoPath/$domain/$(date +%F)/$1/SubDomainizer.txt > /dev/null 2>&1
 }
@@ -119,13 +119,13 @@ Gf(){
     gf ssti $ResultadoPath/$domain/$(date +%F)/URLsLimpas.txt >> $ResultadoPath/$domain/$(date +%F)/$1/GF/ssti.txt
 }
 
-nuclei(){
+nucleiT(){
     echo -e ">> \e[36mNuclei\e[0m is in progress"
     nuclei -l $ResultadoPath/$domain/$(date +%F)/URLsLimpas.txt -t $FerramentasPath/nuclei-templates/ -o $ResultsPath/$domain/$(date +%F)/$1/nuclei.txt > /dev/null 2>&1
 
 }
 
-aquatone(){
+aquatoneT(){
     echo -e ">> \e[36mAquatone\e[0m is in progress"
     mkdir $ResultsPath/$domain/$(date +%F)/Aquatone
     cd $ResultsPath/$domain/$(date +%F)/Aquatone
@@ -133,7 +133,7 @@ aquatone(){
 
 }
 
-goop(){
+goopT(){
     echo -e ">> \e[36mGoop\e[0m is in progress"
     ##cat $ResultadoPath/$domain/$(date +%F)/$1/URLsLimpas.txt | xargs -I@ sh -c 'goop -f @' > GitTest.txt
     goop -l $ResultadoPath/$domain/$(date +%F)/$1/URLsLimpas.txt > $ResultadoPath/$domain/$(date +%F)/$1/goop.txt
@@ -148,7 +148,7 @@ goop(){
 # $ResultadoPath/$domain/$(date +%F)/$1/paramspider.txt
 # $ResultadoPath/$domain/$(date +%F)/$1/SubDomainizer.txt
 
-httpx(){
+httpxT(){
     echo -e ">> \e[36mHttpx\e[0m is in progress"
     cat $ResultadoPath/$domain/$(date +%F)/$1/SubDomainizer.txt $ResultadoPath/$domain/$(date +%F)/$1/paramspider.txt $ResultadoPath/$domain/$(date +%F)/$1/linkfinder.txt $ResultadoPath/$domain/$(date +%F)/$1/gau.txt $ResultadoPath/$domain/$(date +%F)/$1/amass.txt > $ResultadoPath/$domain/$(date +%F)/$1/geral.txt
     cat $ResultadoPath/$domain/$(date +%F)/$1/geral.txt | httpx -silent | uniq -u > $ResultadoPath/$domain/$(date +%F)/$1/URLsLimpas.txt
@@ -157,73 +157,73 @@ httpx(){
 
 ## Main ##
 
-main()
-    banner()
+main(){
+    banner
 
     if [-v full] ## Vai scanear se a opção for true.
     then
         echo -e "Recon FULL em andamento, pega um café... ou uma cerveja :)"
-        start()
-        amass()
-        gau()
-        linkfinder()
-        paramspider()
-        subdomainizer()
-        httpx()
+        start
+        amassT
+        gauT
+        linkfinderT
+        paramspiderT
+        subdomainizerT
+        httpxT
     fi
 
     if [-v subs]
     then
-        amass()
+        amassT
     fi
 
     if [-v urls]
     then
-        gau()
+        gauT
     fi
 
     if [-v endpoint]
     then
-        linkfinder()
+        linkfinderT
     fi
 
     if [-v parametros]
     then
-        paramspider()
+        paramspiderT
     fi
 
     if [-v secrets]
     then
-        subdomainizer()
+        subdomainizerT
     fi
 
     ## Scan
 
     if [-v ScanParametros]
     then
-        Gf()
+        GfT
     fi
 
     if [-v ScanTemplates]
     then
-        nuclei()
+        nucleiT
     fi
 
     if [-v ScanVisual]
     then
-        aquatone()
+        aquatoneT
     fi
 
     if [-v verificar]
     then
-        httpx()
+        httpxT
     fi
 
     if [-v ScanGit]
     then
-        goop()
+        goopT
     fi
-
+}
 
     while :; do
         case $1 in
