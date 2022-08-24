@@ -3,28 +3,27 @@ import argparse
 
 #iniciando argparser
 parser = argparse.ArgumentParser()
-args = parser.parse_args()
 
 parser.add_argument("-d", "--Domain", help = "Dominio em formato domain.tld.", required=True)
 
-parser.add_argument("-F", "--Full", help = "Roda tudo de recon que tem aqui amigão")
+parser.add_argument("-F", "--Full", action='store_true', help = "Roda tudo de recon que tem aqui amigão")
 
-parser.add_argument("-subs", "--ReconSubs", help = "Procura por subdominios do dominio especificado. (amass)")
-parser.add_argument("-u", "--Urls", help = "Busca Urls interligadas as URL's encontradas. (gau)")
-parser.add_argument("-e", "--Endpoints", help = "Procura por endspoints. (linkfinder)")
-parser.add_argument("-p", "--Parametros", help = "Procura por parametros. (Paramspider)")
-parser.add_argument("-s", "--Secrets", help = "Procura por keys e subdominios dentro das paginas nas URL's (SubDomainizer)")
-
-
-parser.add_argument("-v", "--Verificar", help = "Limpa as URL's com o httpx e retira duplicatas")
+parser.add_argument("-subs", "--ReconSubs", action='store_true' , help = "Procura por subdominios do dominio especificado. (amass)")
+parser.add_argument("-u", "--Urls", action='store_true' , help = "Busca Urls interligadas as URL's encontradas. (gau)")
+parser.add_argument("-e", "--Endpoints", action='store_true' , help = "Procura por endspoints. (linkfinder)")
+parser.add_argument("-p", "--Parametros", action='store_true' , help = "Procura por parametros. (Paramspider)")
+parser.add_argument("-s", "--Secrets", action='store_true' , help = "Procura por keys e subdominios dentro das paginas nas URL's (SubDomainizer)")
 
 
-parser.add_argument("-sP", "--ScanParametros", help = "Procura por parametros com possiveis padrões de Vuln. (Gf & Gf-Pattern)")
-parser.add_argument("-sT", "--ScanTemplates", help = "Testa URL's atravês de templates. (nuclei)")
-parser.add_argument("-sV", "--ScanVisual", help = "Faz um scan mais 'visual' dás urls. (aquatone)")
-parser.add_argument("-sC", "--ScanGit", help = "Procura por git exposeds. (goop)")
+parser.add_argument("-v", "--Verificar", action='store_true' , help="Limpa as URL's com o httpx e retira duplicatas")
 
 
+parser.add_argument("-sP", "--ScanParametros", action='store_true' , help = "Procura por parametros com possiveis padrões de Vuln. (Gf & Gf-Pattern)")
+parser.add_argument("-sT", "--ScanTemplates", action='store_true' , help = "Testa URL's atravês de templates. (nuclei)")
+parser.add_argument("-sV", "--ScanVisual", action='store_true' , help = "Faz um scan mais 'visual' dás urls. (aquatone)")
+parser.add_argument("-sC", "--ScanGit", action='store_true' , help = "Procura por git exposeds. (goop)")
+
+args = parser.parse_args()
 
 ResultadoPath='/root/Auto-Recon/Resultado'
 FerramentasPath='/root/Auto-Recon/Ferramentas'
