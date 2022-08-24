@@ -12,7 +12,6 @@ die() {
 }
 
 help() {
-    banner
     echo -e "Use : .recon.sh -d domain.tld -r -s
     -d    | --domain        (requer)   : Dominio em formato domain.tld.
     --Recon--
@@ -158,7 +157,7 @@ httpxT(){
 ## Main ##
 
 main(){
-    banner
+    banner()
 
     if [-v full] ## Vai scanear se a opção for true.
     then
